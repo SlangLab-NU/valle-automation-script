@@ -2,6 +2,7 @@
 
 valle_root=/scratch/zhang.tianyi9/automation/valle
 checkpoint_dir=$valle_root/egs/libritts
+max_epochs=20  # Maximum number of epochs after which the script should stop
 
 # Function to find the latest checkpoint and update the job name
 update_job_name_and_checkpoint() {
@@ -13,6 +14,12 @@ update_job_name_and_checkpoint() {
         epoch_num=$(echo $latest_epoch | grep -o -E '[0-9]+')
         checkpoint_args="--start-epoch $((epoch_num + 1))"
         job_name="train_${epoch_num}_end"
+
+        # Check if max epochs have been reached
+        if (( epoch_num >= max_epochs )); then
+            echo "Maximum number of epochs ($max_epochs) reached. Stopping the watchdog script."
+            exit 0
+        fi
     elif [[ -n $latest_batch ]]; then
         batch_num=$(echo $latest_batch | grep -o -E '[0-9]+')
         checkpoint_args="--start-batch $batch_num"
