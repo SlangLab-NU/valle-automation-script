@@ -4,6 +4,7 @@ valle_root=/scratch/zhang.tianyi9/automation/valle
 checkpoint_dir=$valle_root/egs/libritts
 max_epochs=20  # Maximum number of epochs after which the script should stop
 
+
 # Function to find the latest checkpoint and update the job name
 update_job_name_and_checkpoint() {
     cd $checkpoint_dir
@@ -17,7 +18,7 @@ update_job_name_and_checkpoint() {
 
         # Check if max epochs have been reached
         if (( epoch_num >= max_epochs )); then
-            echo "Maximum number of epochs ($max_epochs) reached. No further action required."
+            echo "Maximum number of epochs ($max_epochs) reached at $(date). No further action required."
             exit 0
         fi
     elif [[ -n $latest_batch ]]; then
@@ -35,11 +36,14 @@ update_job_name_and_checkpoint() {
 }
 
 # Check if there are running or pending jobs
-if ! squeue -u `whoami` | grep -E " R| PD" > /dev/null; then
+if squeue -u `whoami` | grep -E " R| PD" > /dev/null; then
+    echo "Job still running or pending in the queue as of $(date). No action taken."
+else
     # Update job name and checkpoints
     update_job_name_and_checkpoint
 
     # Submit the next job
+    echo "Submitting job $job_name at $(date)"
     sbatch $valle_root/../train_job.sh
 fi
 
