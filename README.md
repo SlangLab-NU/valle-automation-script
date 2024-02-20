@@ -13,8 +13,7 @@ This repository contains three scripts for managing a machine learning training 
 - Adjust `max_epochs` parameter, so the check_and_submit stop submitting the job when the epoch reaches this number.
 
 ## 3. Setup the watchdog script
-You will need a server that is contantly on. Luckily we have Polaris. The watchdog periodically ssh into the cluster and run check_and_submit.sh to submit jobs for us. You might wonder, why don't we just run watchdog script on NEU login node? This is because NEU login node has watchdogs too, and they will kill your script as soon you logoff or get disconnected, even if you use nohup. 
-
+You will need a server that is contantly on. Luckily we have Polaris. The watchdog periodically ssh into the cluster and run check_and_submit.sh to submit jobs for us. 
 First, we need to set up passwordless login. On polaris shell, run:
 `ssh-copy-id -i ~/.ssh/id_rsa.pub your_neu_username@login.discovery.neu.edu`
 after this runs successfully, you should try to ssh into login.discovery.neu.edu, and no password will be needed.
