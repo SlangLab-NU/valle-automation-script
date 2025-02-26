@@ -17,16 +17,33 @@ module load singularity
 
 # Set up environment variables
 source $(dirname "$0")/config.sh
-echo "user: $USER"
 mkdir -p $checkpoint_dir
 cd $valle_root/egs/libritts
 
 # Run training script within Singularity container
 singularity run --nv --bind $valle_root:$valle_root $singularity_image \
-    python3 bin/trainer.py --max-duration 80 --filter-min-duration 0.5 --filter-max-duration 14 --train-stage 1 \
-      --num-buckets 6 --dtype "float16" --save-every-n 10000 --valid-interval 20000 \
-      --model-name valle --share-embedding true --norm-first true --add-prenet false \
-      --decoder-dim 1024 --nhead 16 --num-decoder-layers 12 --prefix-mode 1 \
-      --base-lr 0.05 --warmup-steps 200 --average-period 0 \
-      --num-epochs 20 --start-epoch 1 --start-batch 0 --accumulate-grad-steps 4 \
+    python3 bin/trainer.py \
+      --max-duration $max_duration \
+      --filter-min-duration $filter_min_duration \
+      --filter-max-duration $filter_max_duration \
+      --train-stage $train_stage \
+      --num-buckets $num_buckets \
+      --dtype $dtype \
+      --save-every-n $save_every_n \
+      --valid-interval $valid_interval \
+      --model-name $model_name \
+      --share-embedding $share_embedding \
+      --norm-first $norm_first \
+      --add-prenet $add_prenet \
+      --decoder-dim $decoder_dim \
+      --nhead $nhead \
+      --num-decoder-layers $num_decoder_layers \
+      --prefix-mode $prefix_mode \
+      --base-lr $base_lr \
+      --warmup-steps $warmup_steps \
+      --average-period $average_period \
+      --num-epochs $num_epochs \
+      --start-epoch $start_epoch \
+      --start-batch $start_batch \
+      --accumulate-grad-steps $accumulate_grad_steps \
       --exp-dir $checkpoint_dir
