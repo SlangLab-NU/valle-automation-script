@@ -1,6 +1,6 @@
 #!/bin/bash
 
-remote_user="zhang.jinda1"
+remote_user=$USER
 remote_host="login.discovery.neu.edu"
 remote_script_path="/work/van-speech-nlp/valle-automation-script/check_and_submit.sh"
 sleep_sec=3600

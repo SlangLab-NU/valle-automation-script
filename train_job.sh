@@ -17,6 +17,7 @@ module load singularity
 
 # Set up environment variables
 source $(dirname "$0")/config.sh
+echo "user: $USER"
 mkdir -p $checkpoint_dir
 cd $valle_root/egs/libritts
 
