@@ -1,9 +1,6 @@
 #!/bin/bash
 
-valle_root=/scratch/zhang.tianyi9/automation/valle
-checkpoint_dir=$valle_root/egs/libritts
-max_epochs=20  # Maximum number of epochs after which the script should stop
-
+source $(dirname "$0")/config.sh
 
 # Function to find the latest checkpoint and update the job name
 update_job_name_and_checkpoint() {
@@ -28,7 +25,7 @@ update_job_name_and_checkpoint() {
     fi
 
     # Set job name
-    job_name="train_${epoch_num}_${batch_num}"
+    job_name="valle_train_${epoch_num}_${batch_num}"
 
     # Check if max epochs have been reached
     if (( epoch_num > max_epochs )); then
@@ -43,7 +40,7 @@ update_job_name_and_checkpoint() {
 }
 
 # Check if there are running or pending jobs
-if squeue -u `whoami` | grep -E " R| PD" > /dev/null; then
+if squeue -u `whoami` | grep -q $job_name > /dev/null; then
     echo "Job still running or pending in the queue as of $(date). No action taken."
 else
     # Update job name and checkpoints
@@ -51,6 +48,6 @@ else
 
     # Submit the next job
     echo "Submitting job $job_name at $(date)"
-    sbatch $valle_root/../train_job.sh
+    sbatch $valle_root/../train.sh
 fi
 
