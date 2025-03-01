@@ -7,7 +7,7 @@
 #SBATCH --constraint=ib
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:t4:1
+#SBATCH --gres=gpu:$gpu_flags
 #SBATCH --mem=15G
 #SBATCH --cpus-per-task=8
 #SBATCH --time=08:00:00
