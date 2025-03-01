@@ -1,10 +1,12 @@
 #!/bin/bash
 
 valle_root=/work/van-speech-nlp/aanchan/refactor-valle/VallE
-checkpoint_dir=$valle_root/egs/uaspeech/exp/train_example
+egs_dir=$valle_root/egs/libritts
+checkpoint_dir=$egs_dir/exp/train_example
 max_epochs=20
 singularity_image=/work/van-speech-nlp/valle_container/valle.sif
 job_name=valle_train
+
 
 
 # training parameters
