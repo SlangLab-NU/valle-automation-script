@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # SLURM job parameters
-#SBATCH --job-name=train_orig_8_0_1
-#SBATCH --output=logs/%j_output.log
-#SBATCH --error=logs/%j_output.log
+#SBATCH --job-name=valle_train_1_0
+#SBATCH --output=/work/van-speech-nlp/aanchan/vall-e/logs/%j_output.log
+#SBATCH --error=/work/van-speech-nlp/aanchan/vall-e/logs/%j_output.log
 #SBATCH --constraint=ib
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
@@ -53,7 +53,7 @@ singularity run --nv --bind $valle_root:$valle_root $singularity_image \
       --warmup-steps $warmup_steps \
       --average-period $average_period \
       --num-epochs $num_epochs \
-      --start-epoch $start_epoch \
-      --start-batch $start_batch \
+      --start-epoch 1 \
+      --start-batch 0 \
       --accumulate-grad-steps $accumulate_grad_steps \
       --exp-dir $checkpoint_dir
