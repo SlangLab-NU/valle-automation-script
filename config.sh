@@ -7,6 +7,7 @@ max_epochs=20
 singularity_image=/work/van-speech-nlp/valle_container/valle.sif
 job_name=valle_train
 log_dir=/work/van-speech-nlp/aanchan/logs
+gpu_flags=v100-sxm2
 
 
 
