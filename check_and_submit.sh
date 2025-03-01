@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source $(dirname "$0")/config.sh
+source /work/van-speech-nlp/aanchan/vall-e/config.sh
 
 # Function to find the latest checkpoint and update the job name
 update_job_name_and_checkpoint() {
@@ -34,9 +34,9 @@ update_job_name_and_checkpoint() {
     fi
 
     # Update job name, start epoch, and start batch in the train_job.sh script
-    sed -i "s/#SBATCH --job-name=.*/#SBATCH --job-name=$job_name/" $valle_root/../train_job.sh
-    sed -i "s/--start-epoch [0-9]*/--start-epoch $epoch_num/" $valle_root/../train_job.sh
-    sed -i "s/--start-batch [0-9]*/--start-batch $batch_num/" $valle_root/../train_job.sh
+    sed -i "s/#SBATCH --job-name=.*/#SBATCH --job-name=$job_name/" $valle_root/train_job.sh
+    sed -i "s/--start-epoch [0-9]*/--start-epoch $epoch_num/" $valle_root/train_job.sh
+    sed -i "s/--start-batch [0-9]*/--start-batch $batch_num/" $valle_root/train_job.sh
 }
 
 # Check if there are running or pending jobs
@@ -48,6 +48,6 @@ else
 
     # Submit the next job
     echo "Submitting job $job_name at $(date)"
-    sbatch $valle_root/../train.sh
+    sbatch $valle_root/train_job.sh
 fi
 
