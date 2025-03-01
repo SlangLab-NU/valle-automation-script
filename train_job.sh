@@ -1,22 +1,31 @@
 #!/bin/bash
 
 # SLURM job parameters
-#SBATCH --job-name=$job_name
-#SBATCH --output=$log_dir/%j_output.log
-#SBATCH --error=$log_dir/%j_output.log
+#SBATCH --job-name=train_orig_8_0_1
+#SBATCH --output=logs/%j_output.log
+#SBATCH --error=logs/%j_output.log
 #SBATCH --constraint=ib
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:$gpu_flags
+#SBATCH --gres=gpu:v100-sxm2
 #SBATCH --mem=15G
 #SBATCH --cpus-per-task=8
 #SBATCH --time=08:00:00
+
+# Print out SBATCH parameters
+echo "Job Name: $SLURM_JOB_NAME"
+echo "Job ID: $SLURM_JOB_ID"
+echo "Partition: $SLURM_JOB_PARTITION"
+echo "GPUs Requested: $SLURM_GPUS"
+echo "Memory Allocated: $SLURM_MEM_PER_NODE"
+echo "CPUs per Task: $SLURM_CPUS_PER_TASK"
+echo "Time Limit: $SLURM_TIMELIMIT"
 
 # Load required modules
 module load singularity
 
 # Set up environment variables
-source $(dirname "$0")/config.sh
+source /work/van-speech-nlp/aanchan/vall-e/config.sh
 mkdir -p $checkpoint_dir
 cd $egs_dir
 
