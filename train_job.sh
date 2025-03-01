@@ -3,7 +3,7 @@
 # SLURM job parameters
 #SBATCH --job-name=$job_name
 #SBATCH --output=$log_dir/%j_output.log
-#SBATCH --error=$log_dir/%j_error.log
+#SBATCH --error=$log_dir/%j_output.log
 #SBATCH --constraint=ib
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
