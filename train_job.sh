@@ -18,7 +18,7 @@ module load singularity
 # Set up environment variables
 source $(dirname "$0")/config.sh
 mkdir -p $checkpoint_dir
-cd $valle_root/egs/uaspeech
+cd $egs_dir
 
 export SINGULARITYENV_PYTHONPATH="/workspace/icefall:$PYTHONPATH"
 # Run training script within Singularity container
