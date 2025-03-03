@@ -1,12 +1,14 @@
 #!/bin/bash
 
+job_name=train_orig_8_0_1
 valle_root=/work/van-speech-nlp/aanchan/vall-e
 egs_dir=$valle_root/egs/libritts
-checkpoint_dir=$egs_dir/exp/train_example
+checkpoint_dir=$egs_dir/exp/$job_name
 max_epochs=20
 singularity_image=/work/van-speech-nlp/valle_container/valle.sif
 job_name=train_orig_8_0_1
-log_dir=/work/van-speech-nlp/aanchan/vall-e/logs
+log_dir=$checkpoint_dir/logs
+mkdir -p $log_dir
 gpu_flags=v100-sxm2
 
 
