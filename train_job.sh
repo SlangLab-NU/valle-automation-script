@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # SLURM job parameters
-#SBATCH --job-name=valle_train_1_0
-#SBATCH --output=/work/van-speech-nlp/aanchan/vall-e/logs/%j_output.log
-#SBATCH --error=/work/van-speech-nlp/aanchan/vall-e/logs/%j_output.log
+#SBATCH --job-name=train_orig_8_0_1
+#SBATCH --output=/work/van-speech-nlp/aanchan/vall-e/egs/libritts/exp/%x/%j_output.log
+#SBATCH --error=/work/van-speech-nlp/aanchan/vall-e/egs/libritts/exp/%x/%j_output.log
 #SBATCH --constraint=ib
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
