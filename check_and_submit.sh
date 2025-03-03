@@ -11,7 +11,7 @@ update_job_name_and_checkpoint() {
     # Defaults
     local epoch_num=1
     local batch_num=0
-    local job_name=""
+    local local_job_name=""
 
     # Determine epoch number
     if [[ -n $latest_epoch ]]; then
@@ -25,7 +25,7 @@ update_job_name_and_checkpoint() {
     fi
 
     # Set job name
-    job_name="valle_train_${epoch_num}_${batch_num}"
+    local_job_name="${job_name}_${epoch_num}_${batch_num}"
 
     # Check if max epochs have been reached
     if (( epoch_num > max_epochs )); then
