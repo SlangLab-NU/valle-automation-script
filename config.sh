@@ -8,7 +8,7 @@ fi
 
 echo "VALLE_ROOT is $VALLE_ROOT"
 
-job_name=train_orig_8_0_1
+job_name=att3_train_orig_8_0_1
 egs_dir=$VALLE_ROOT/egs/libritts
 checkpoint_dir=$egs_dir/exp/$job_name
 log_dir=$checkpoint_dir/logs

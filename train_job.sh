@@ -9,6 +9,16 @@ if [ -z "${dynamic_job_name// /}" ]; then
     exit 1  # Exit with an error
 fi
 
+if [ -z "$job_name" ]; then
+    echo "job_name is not set. Please define it."
+    exit 1
+fi
+
+if [ -z "$VALLE_ROOT" ]; then
+    echo "job_name is not set. Please define it."
+    exit 1
+fi
+
 # SLURM job parameters
 #SBATCH --job-name=${dynamic_job_name}
 #SBATCH --output=${VALLE_ROOT}/egs/libritts/exp/${job_name}/logs/%j_output.log
