@@ -34,20 +34,18 @@ update_job_name_and_checkpoint() {
     fi
 
     # Update job name, start epoch, and start batch in the train_job.sh script
-    sed -i "s/#SBATCH --job-name=.*/#SBATCH --job-name=$job_name/" $valle_root/train_job.sh
+    sed -i "s/#SBATCH --job-name=.*/#SBATCH --job-name=$local_job_name/" $valle_root/train_job.sh
     sed -i "s/--start-epoch [0-9]*/--start-epoch $epoch_num/" $valle_root/train_job.sh
     sed -i "s/--start-batch [0-9]*/--start-batch $batch_num/" $valle_root/train_job.sh
 }
 
-# Check if there are running or pending jobs
-if squeue -u `whoami` | grep -q $job_name > /dev/null; then
-    echo "Job still running or pending in the queue as of $(date). No action taken."
-else
-    # Update job name and checkpoints
+
+
+if squeue -u "$(whoami)" -o "%.50j" | awk -v job="$job_name" '$1 == job {exit 1}'; then
+    echo "No matching job found. Proceeding with new job submission."
     update_job_name_and_checkpoint
-
-    # Submit the next job
     echo "Submitting job $job_name at $(date)"
-    sbatch $valle_root/train_job.sh
+    sbatch "$valle_root/train_job.sh"
+else
+    echo "Job $job_name is still running or pending as of $(date). No action taken."
 fi
-
