@@ -1,16 +1,29 @@
 #!/bin/bash
 
+#The following two lines make sure that VALLE_ROOT has been defined externally
+if [ -z "$VALLE_ROOT" ]; then
+    echo "VALLE_ROOT is not set. Please define it externally using 'export VALLE_ROOT=/path/to/valle/root.'"
+    exit 1  # Exit with an error
+fi
+
+echo "VALLE_ROOT is $VALLE_ROOT"
+
 job_name=train_orig_8_0_1
-valle_root=/work/van-speech-nlp/aanchan/vall-e
-egs_dir=$valle_root/egs/libritts
+egs_dir=$VALLE_ROOT/egs/libritts
 checkpoint_dir=$egs_dir/exp/$job_name
-max_epochs=20
-singularity_image=/work/van-speech-nlp/valle_container/valle.sif
-job_name=train_orig_8_0_1
 log_dir=$checkpoint_dir/logs
 mkdir -p $log_dir
-gpu_flags=v100-sxm2
+max_epochs=20
+singularity_image=/work/van-speech-nlp/valle_container/valle.sif
 
+# Moved to paths.sh
+#checkpoint_dir=$egs_dir/exp/$dynamic_job_name
+#log_dir=$checkpoint_dir/logs
+#mkdir -p $log_dir
+#egs_dir=$VALLE_ROOT/egs/libritts
+#max_epochs=20
+#singularity_image=/work/van-speech-nlp/valle_container/valle.sif
+#gpu_flags=v100-sxm2
 
 
 # training parameters
@@ -37,3 +50,4 @@ num_epochs=20
 start_epoch=1
 start_batch=0
 accumulate_grad_steps=4
+

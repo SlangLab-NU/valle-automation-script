@@ -1,9 +1,18 @@
 #!/bin/bash
 
+#Load dynamic job name and config variables
+source $VALLE_ROOT/config.sh
+source $VALLE_ROOT/job_name.conf
+
+if [ -z "$dynamic_job_name" ]; then
+    echo "dynamic_job_name is not set"
+    exit 1  # Exit with an error
+fi
+
 # SLURM job parameters
-#SBATCH --job-name=train_orig_8_0_1
-#SBATCH --output=/work/van-speech-nlp/aanchan/vall-e/egs/libritts/exp/%x/logs/%j_output.log
-#SBATCH --error=/work/van-speech-nlp/aanchan/vall-e/egs/libritts/exp/%x/logs/%j_output.log
+#SBATCH --job-name=${dynamic_job_name}
+#SBATCH --output=${VALLE_ROOT}/egs/libritts/exp/${job_name}/logs/%j_output.log
+#SBATCH --error=${VALLE_ROOT}/egs/libritts/exp/${job_name}/logs/%j_output.log
 #SBATCH --constraint=ib
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
@@ -25,13 +34,11 @@ echo "Time Limit: $SLURM_TIMELIMIT"
 module load singularity
 
 # Set up environment variables
-source /work/van-speech-nlp/aanchan/vall-e/config.sh
-mkdir -p $checkpoint_dir
 cd $egs_dir
 
 export SINGULARITYENV_PYTHONPATH="/workspace/icefall:$PYTHONPATH"
 # Run training script within Singularity container
-singularity run --nv --bind $valle_root:$valle_root $singularity_image \
+singularity run --nv --bind $VALLE_ROOT:$VALLE_ROOT $singularity_image \
     python3 bin/trainer.py \
       --max-duration $max_duration \
       --filter-min-duration $filter_min_duration \

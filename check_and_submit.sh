@@ -1,6 +1,14 @@
 #!/bin/bash
 
-source /work/van-speech-nlp/aanchan/vall-e/config.sh
+#The following two lines make sure that VALLE_ROOT has been defined externally                                                                               
+if [ -z "$VALLE_ROOT" ]; then
+    echo "VALLE_ROOT is not set. Please define it externally using 'export VALLE_ROOT=/path/to/valle/root.'"
+    exit 1  # Exit with an error                                                                                                                             
+fi
+
+source $VALLE_ROOT/config.sh
+
+dynamic_job_name=''
 
 # Function to find the latest checkpoint and update the job name
 update_job_name_and_checkpoint() {
@@ -34,18 +42,25 @@ update_job_name_and_checkpoint() {
     fi
 
     # Update job name, start epoch, and start batch in the train_job.sh script
-    sed -i "s/#SBATCH --job-name=.*/#SBATCH --job-name=$local_job_name/" $valle_root/train_job.sh
-    sed -i "s/--start-epoch [0-9]*/--start-epoch $epoch_num/" $valle_root/train_job.sh
-    sed -i "s/--start-batch [0-9]*/--start-batch $batch_num/" $valle_root/train_job.sh
+    sed -i "s/#SBATCH --job-name=.*/#SBATCH --job-name=$local_job_name/" $VALLE_ROOT/train_job.sh
+    sed -i "s/--start-epoch [0-9]*/--start-epoch $epoch_num/" $VALLE_ROOT/train_job.sh
+    sed -i "s/--start-batch [0-9]*/--start-batch $batch_num/" $VALLE_ROOT/train_job.sh
+
+    # This ensures the dynamically updated job_name is written to a file that train_job.sh can source.
+    echo "dynamic_job_name=$local_job_name" > $VALLE_ROOT/job_name.conf
+    dynamic_job_name = $local_job_name
 }
 
 
 
-if squeue -u "$(whoami)" -o "%.50j" | awk -v job="$job_name" '$1 == job {exit 1}'; then
+if squeue -u "$(whoami)" -o "%.50j" | awk -v job="$job_name" '$1 ~ job {exit 1}'; then
     echo "No matching job found. Proceeding with new job submission."
     update_job_name_and_checkpoint
-    echo "Submitting job $job_name at $(date)"
-    sbatch "$valle_root/train_job.sh"
+    if [ -z "$dyanmic_job_name" ]; then
+	echo "dynamic_job_name is not set."
+    fi
+     echo "Submitting job $dynamic_job_name at $(date)"
+    sbatch "$VALLE_ROOT/train_job.sh"
 else
-    echo "Job $job_name is still running or pending as of $(date). No action taken."
+    echo "Job $dynamic_job_name is still running or pending as of $(date). No action taken."
 fi
