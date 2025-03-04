@@ -48,7 +48,7 @@ update_job_name_and_checkpoint() {
 
     # This ensures the dynamically updated job_name is written to a file that train_job.sh can source.
     echo "dynamic_job_name=$local_job_name" > $VALLE_ROOT/job_name.conf
-    dynamic_job_name = $local_job_name
+    dynamic_job_name=$local_job_name
 }
 
 
