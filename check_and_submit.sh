@@ -56,7 +56,7 @@ update_job_name_and_checkpoint() {
 if squeue -u "$(whoami)" -o "%.50j" | awk -v job="$job_name" '$1 ~ job {exit 1}'; then
     echo "No matching job found. Proceeding with new job submission."
     update_job_name_and_checkpoint
-    if [ -z "$dyanmic_job_name" ]; then
+    if [ -z "${dynamic_job_name// /}" ]; then
 	echo "dynamic_job_name is not set."
     fi
      echo "Submitting job $dynamic_job_name at $(date)"

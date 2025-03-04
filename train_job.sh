@@ -4,7 +4,7 @@
 source $VALLE_ROOT/config.sh
 source $VALLE_ROOT/job_name.conf
 
-if [ -z "$dynamic_job_name" ]; then
+if [ -z "${dynamic_job_name// /}" ]; then
     echo "dynamic_job_name is not set"
     exit 1  # Exit with an error
 fi
