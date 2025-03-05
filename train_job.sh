@@ -23,8 +23,6 @@ echo "Time Limit: $SLURM_TIMELIMIT"
 
 
 #Load dynamic job name and config variables
-source $script_dir/config.sh
-
 if [ -z "$job_name" ]; then
     echo "job_name is not set. Please define it."
     exit 1
@@ -33,8 +31,10 @@ fi
 if [ -z "$script_dir" ]; then
     echo "script_dir is not set. Please define it."
     exit 1
-fi
+fi 
 
+
+source $script_dir/config.sh
 
 # Load required modules
 module load singularity

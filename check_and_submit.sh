@@ -6,6 +6,17 @@ if [ -z "$VALLE_ROOT" ]; then
     exit 1  # Exit with an error                                                                                                                             
 fi
 
+if [ -z "$job_name" ]; then
+    echo "job_name is not set. Please define it."
+    exit 1
+fi
+
+if [ -z "$script_dir" ]; then
+    echo "script_dir is not set. Please define it."
+    exit 1
+fi
+
+
 source $VALLE_ROOT/config.sh
 
 dynamic_job_name=''
