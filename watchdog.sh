@@ -13,7 +13,7 @@ setup="true"
 run_automation="false"
 
 if [[ "$setup" == "true" ]]; then
-    ssh -T ${remote_user}@${remote_host} "mkdir -p $script_dir && cd $script_dir && git clone https://github.com/SlangLab-NU/valle-automation-script.git"
+    ssh -T ${remote_user}@${remote_host} "mkdir -p $script_dir && cd $script_dir && git clone --branch mods-to-config --depth 1 https://github.com/SlangLab-NU/valle-automation-script.git && mv valle-automation-script/* . && rm -rf valle-automation-script"
 fi
 
 if [[ "$run_automation" == "true" ]]; then
