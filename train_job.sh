@@ -1,24 +1,5 @@
 #!/bin/bash
 
-#Load dynamic job name and config variables
-source $VALLE_ROOT/config.sh
-source $VALLE_ROOT/job_name.conf
-
-if [ -z "${dynamic_job_name// /}" ]; then
-    echo "dynamic_job_name is not set"
-    exit 1  # Exit with an error
-fi
-
-if [ -z "$job_name" ]; then
-    echo "job_name is not set. Please define it."
-    exit 1
-fi
-
-if [ -z "$VALLE_ROOT" ]; then
-    echo "job_name is not set. Please define it."
-    exit 1
-fi
-
 # SLURM job parameters
 #SBATCH --job-name=${dynamic_job_name}
 #SBATCH --output=${VALLE_ROOT}/egs/libritts/exp/${job_name}/logs/%j_output.log
@@ -39,6 +20,27 @@ echo "GPUs Requested: $SLURM_GPUS"
 echo "Memory Allocated: $SLURM_MEM_PER_NODE"
 echo "CPUs per Task: $SLURM_CPUS_PER_TASK"
 echo "Time Limit: $SLURM_TIMELIMIT"
+
+
+#Load dynamic job name and config variables
+source $VALLE_ROOT/config.sh
+source $VALLE_ROOT/job_name.conf
+
+if [ -z "${dynamic_job_name// /}" ]; then
+    echo "dynamic_job_name is not set"
+    exit 1  # Exit with an error
+fi
+
+if [ -z "$job_name" ]; then
+    echo "job_name is not set. Please define it."
+    exit 1
+fi
+
+if [ -z "$VALLE_ROOT" ]; then
+    echo "job_name is not set. Please define it."
+    exit 1
+fi
+
 
 # Load required modules
 module load singularity
