@@ -23,21 +23,15 @@ echo "Time Limit: $SLURM_TIMELIMIT"
 
 
 #Load dynamic job name and config variables
-source $VALLE_ROOT/config.sh
-source $VALLE_ROOT/job_name.conf
-
-if [ -z "${dynamic_job_name// /}" ]; then
-    echo "dynamic_job_name is not set"
-    exit 1  # Exit with an error
-fi
+source $script_dir/config.sh
 
 if [ -z "$job_name" ]; then
     echo "job_name is not set. Please define it."
     exit 1
 fi
 
-if [ -z "$VALLE_ROOT" ]; then
-    echo "job_name is not set. Please define it."
+if [ -z "$script_dir" ]; then
+    echo "script_dir is not set. Please define it."
     exit 1
 fi
 

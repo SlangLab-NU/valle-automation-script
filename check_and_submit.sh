@@ -42,15 +42,14 @@ update_job_name_and_checkpoint() {
     fi
 
     # Update job name, start epoch, and start batch in the train_job.sh script
-    sed -i "s/#SBATCH --job-name=.*/#SBATCH --job-name=$local_job_name/" $VALLE_ROOT/train_job.sh
-    sed -i "s/--start-epoch [0-9]*/--start-epoch $epoch_num/" $VALLE_ROOT/train_job.sh
-    sed -i "s/--start-batch [0-9]*/--start-batch $batch_num/" $VALLE_ROOT/train_job.sh
-    sed -i "s|--output=[^ ]*|--output=${VALLE_ROOT}/egs/$dataset/exp/${job_name}/logs/%j_output.log|" $VALLE_ROOT/train_job.sh
-    sed -i "s|--error=[^ ]*|--error=${VALLE_ROOT}/egs/$dataset/exp/${job_name}/logs/%j_output.log|" $VALLE_ROOT/train_job.sh
+    sed -i "s/#SBATCH --job-name=.*/#SBATCH --job-name=$local_job_name/" $script_dir/train_job.sh
+    sed -i "s/--start-epoch [0-9]*/--start-epoch $epoch_num/" $script_dir/train_job.sh
+    sed -i "s/--start-batch [0-9]*/--start-batch $batch_num/" $script_dir/train_job.sh
+    sed -i "s|--output=[^ ]*|--output=${VALLE_ROOT}/egs/$dataset/exp/${job_name}/logs/%j_output.log|" $script_dir/train_job.sh
+    sed -i "s|--error=[^ ]*|--error=${VALLE_ROOT}/egs/$dataset/exp/${job_name}/logs/%j_output.log|" $script_dir/train_job.sh
 
 
     # This ensures the dynamically updated job_name is written to a file that train_job.sh can source.
-    echo "dynamic_job_name=$local_job_name" > $VALLE_ROOT/job_name.conf
     dynamic_job_name=$local_job_name
 }
 
@@ -63,7 +62,7 @@ if squeue -u "$(whoami)" -o "%.50j" | awk -v job="$job_name" '$1 ~ job {exit 1}'
 	echo "dynamic_job_name is not set."
     fi
      echo "Submitting job $dynamic_job_name at $(date)"
-    sbatch "$VALLE_ROOT/train_job.sh"
+    sbatch "$script_dir/train_job.sh"
 else
     echo "Job $dynamic_job_name is still running or pending as of $(date). No action taken."
 fi
