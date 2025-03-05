@@ -17,7 +17,7 @@ if [ -z "$script_dir" ]; then
 fi
 
 
-source $VALLE_ROOT/config.sh
+source $script_dir/config.sh
 
 dynamic_job_name=''
 
