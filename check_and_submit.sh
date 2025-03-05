@@ -45,6 +45,9 @@ update_job_name_and_checkpoint() {
     sed -i "s/#SBATCH --job-name=.*/#SBATCH --job-name=$local_job_name/" $VALLE_ROOT/train_job.sh
     sed -i "s/--start-epoch [0-9]*/--start-epoch $epoch_num/" $VALLE_ROOT/train_job.sh
     sed -i "s/--start-batch [0-9]*/--start-batch $batch_num/" $VALLE_ROOT/train_job.sh
+    sed -i "s|--output=[^ ]*|--output=${VALLE_ROOT}/egs/libritts/exp/${job_name}/logs/%j_output.log|" $VALLE_ROOT/train_job.sh
+    sed -i "s|--error=[^ ]*|--error=${VALLE_ROOT}/egs/libritts/exp/${job_name}/logs/%j_output.log|" $VALLE_ROOT/train_job.sh
+
 
     # This ensures the dynamically updated job_name is written to a file that train_job.sh can source.
     echo "dynamic_job_name=$local_job_name" > $VALLE_ROOT/job_name.conf
