@@ -9,8 +9,18 @@ fi
 echo "VALLE_ROOT is $VALLE_ROOT"
 
 #Make sure these are defined preflight check
-job_name=att3_train_orig_8_0_1
-script_dir=$VALLE_ROOT/scripts/$job_name
+if [ -z "$job_name" ]; then                                                                                                                                                                              
+    echo "job_name is not set. Please define it."                                                                                                                                                        
+    exit 1
+fi                                                                                                                                                                                                        
+                                                                                                                            
+if [ -z "$script_dir" ]; then                                                                                                                                                                            
+    echo "script_dir is not set. Please define it."                                                                                                                                                      
+    exit 1                                                                                                                                                                                               
+fi
+
+#job_name=att3_train_orig_8_0_1
+#script_dir=$VALLE_ROOT/scripts/$job_name
 
 dataset=libritts
 egs_dir=$VALLE_ROOT/egs/$dataset
