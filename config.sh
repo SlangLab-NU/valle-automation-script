@@ -8,6 +8,9 @@ fi
 
 echo "VALLE_ROOT is $VALLE_ROOT"
 
+# Define repo root separately for clarity and consistency
+VALLE_REPO_ROOT=$VALLE_ROOT/VallE
+
 #Make sure these are defined preflight check
 if [ -z "$job_name" ]; then                                                                                                                                                                              
     echo "job_name is not set. Please define it."                                                                                                                                                        
@@ -28,7 +31,7 @@ checkpoint_dir=$egs_dir/exp/$job_name
 log_dir=$checkpoint_dir/logs
 mkdir -p $log_dir
 max_epochs=20
-singularity_image=/work/van-speech-nlp/valle_container/valle.sif
+singularity_image=$VALLE_REPO_ROOT/concat_speakers_on_dev_set.sif
 
 
 

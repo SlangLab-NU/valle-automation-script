@@ -42,9 +42,9 @@ module load singularity
 # Set up environment variables
 cd $egs_dir
 
-export SINGULARITYENV_PYTHONPATH="/workspace/icefall:$PYTHONPATH"
+export SINGULARITYENV_PYTHONPATH="$VALLE_REPO_ROOT:/workspace/icefall:$PYTHONPATH"
 # Run training script within Singularity container
-singularity run --nv --bind $VALLE_ROOT:$VALLE_ROOT $singularity_image \
+singularity run --nv --bind $VALLE_REPO_ROOT:$VALLE_REPO_ROOT $singularity_image \
     python3 bin/trainer.py \
       --max-duration $max_duration \
       --filter-min-duration $filter_min_duration \
