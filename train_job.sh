@@ -2,8 +2,8 @@
 
 # SLURM job parameters
 #SBATCH --job-name=${dynamic_job_name}
-#SBATCH --output=${VALLE_ROOT}/egs/libritts/exp/${job_name}/logs/%j_output.log
-#SBATCH --error=${VALLE_ROOT}/egs/libritts/exp/${job_name}/logs/%j_output.log
+#SBATCH --output=${VALLE_REPO_ROOT}/egs/libritts/exp/${job_name}/logs/%j_output.log
+#SBATCH --error=${VALLE_REPO_ROOT}/egs/libritts/exp/${job_name}/logs/%j_output.log
 #SBATCH --constraint=ib
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
