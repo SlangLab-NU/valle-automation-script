@@ -26,7 +26,7 @@ fi
 #script_dir=$VALLE_ROOT/scripts/$job_name
 
 dataset=libritts
-egs_dir=$VALLE_ROOT/egs/$dataset
+egs_dir=$VALLE_REPO_ROOT/egs/$dataset
 checkpoint_dir=$egs_dir/exp/$job_name
 log_dir=$checkpoint_dir/logs
 mkdir -p $log_dir
