@@ -1,6 +1,25 @@
 #!/bin/bash
 
-source $(dirname "$0")/config.sh
+#The following two lines make sure that VALLE_ROOT has been defined externally                                                                               
+if [ -z "$VALLE_ROOT" ]; then
+    echo "VALLE_ROOT is not set. Please define it externally using 'export VALLE_ROOT=/path/to/valle/root.'"
+    exit 1  # Exit with an error                                                                                                                             
+fi
+
+if [ -z "$job_name" ]; then
+    echo "job_name is not set. Please define it."
+    exit 1
+fi
+
+if [ -z "$script_dir" ]; then
+    echo "script_dir is not set. Please define it."
+    exit 1
+fi
+
+
+source $script_dir/config.sh
+
+dynamic_job_name=''
 
 # Function to find the latest checkpoint and update the job name
 update_job_name_and_checkpoint() {
@@ -11,7 +30,7 @@ update_job_name_and_checkpoint() {
     # Defaults
     local epoch_num=1
     local batch_num=0
-    local job_name=""
+    local local_job_name=""
 
     # Determine epoch number
     if [[ -n $latest_epoch ]]; then
@@ -25,7 +44,7 @@ update_job_name_and_checkpoint() {
     fi
 
     # Set job name
-    job_name="valle_train_${epoch_num}_${batch_num}"
+    local_job_name="${job_name}_${epoch_num}_${batch_num}"
 
     # Check if max epochs have been reached
     if (( epoch_num > max_epochs )); then
@@ -34,20 +53,27 @@ update_job_name_and_checkpoint() {
     fi
 
     # Update job name, start epoch, and start batch in the train_job.sh script
-    sed -i "s/#SBATCH --job-name=.*/#SBATCH --job-name=$job_name/" $valle_root/../train_job.sh
-    sed -i "s/--start-epoch [0-9]*/--start-epoch $epoch_num/" $valle_root/../train_job.sh
-    sed -i "s/--start-batch [0-9]*/--start-batch $batch_num/" $valle_root/../train_job.sh
+    sed -i "s/#SBATCH --job-name=.*/#SBATCH --job-name=$local_job_name/" $script_dir/train_job.sh
+    sed -i "s/--start-epoch [0-9]*/--start-epoch $epoch_num/" $script_dir/train_job.sh
+    sed -i "s/--start-batch [0-9]*/--start-batch $batch_num/" $script_dir/train_job.sh
+    sed -i "s|--output=[^ ]*|--output=${VALLE_REPO_ROOT}/egs/$dataset/exp/${job_name}/logs/%j_output.log|" $script_dir/train_job.sh
+    sed -i "s|--error=[^ ]*|--error=${VALLE_REPO_ROOT}/egs/$dataset/exp/${job_name}/logs/%j_output.log|" $script_dir/train_job.sh
+
+
+    # This ensures the dynamically updated job_name is written to a file that train_job.sh can source.
+    dynamic_job_name=$local_job_name
 }
 
-# Check if there are running or pending jobs
-if squeue -u `whoami` | grep -q $job_name > /dev/null; then
-    echo "Job still running or pending in the queue as of $(date). No action taken."
-else
-    # Update job name and checkpoints
+
+
+if squeue -u "$(whoami)" -o "%.50j" | awk -v job="$job_name" '$1 ~ job {exit 1}'; then
+    echo "No matching job found. Proceeding with new job submission."
     update_job_name_and_checkpoint
-
-    # Submit the next job
-    echo "Submitting job $job_name at $(date)"
-    sbatch $valle_root/../train.sh
+    if [ -z "${dynamic_job_name// /}" ]; then
+	echo "dynamic_job_name is not set."
+    fi
+     echo "Submitting job $dynamic_job_name at $(date)"
+    sbatch "$script_dir/train_job.sh"
+else
+    echo "Job $dynamic_job_name is still running or pending as of $(date). No action taken."
 fi
-

@@ -1,28 +1,50 @@
 #!/bin/bash
 
 # SLURM job parameters
-#SBATCH --job-name=valle_train
-#SBATCH --output=logs/%j_output.log
-#SBATCH --error=logs/%j_error.log
+#SBATCH --job-name=${dynamic_job_name}
+#SBATCH --output=${VALLE_REPO_ROOT}/egs/libritts/exp/${job_name}/logs/%j_output.log
+#SBATCH --error=${VALLE_REPO_ROOT}/egs/libritts/exp/${job_name}/logs/%j_output.log
 #SBATCH --constraint=ib
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:t4:1
+#SBATCH --gres=gpu:v100-sxm2
 #SBATCH --mem=15G
 #SBATCH --cpus-per-task=8
 #SBATCH --time=08:00:00
+
+# Print out SBATCH parameters
+echo "Job Name: $SLURM_JOB_NAME"
+echo "Job ID: $SLURM_JOB_ID"
+echo "Partition: $SLURM_JOB_PARTITION"
+echo "GPUs Requested: $SLURM_GPUS"
+echo "Memory Allocated: $SLURM_MEM_PER_NODE"
+echo "CPUs per Task: $SLURM_CPUS_PER_TASK"
+echo "Time Limit: $SLURM_TIMELIMIT"
+
+
+#Load dynamic job name and config variables
+if [ -z "$job_name" ]; then
+    echo "job_name is not set. Please define it."
+    exit 1
+fi
+
+if [ -z "$script_dir" ]; then
+    echo "script_dir is not set. Please define it."
+    exit 1
+fi 
+
+
+source $script_dir/config.sh
 
 # Load required modules
 module load singularity
 
 # Set up environment variables
-source $(dirname "$0")/config.sh
-mkdir -p $checkpoint_dir
-cd $valle_root/egs/uaspeech
+cd $egs_dir
 
-export SINGULARITYENV_PYTHONPATH="/workspace/icefall:$PYTHONPATH"
+export SINGULARITYENV_PYTHONPATH="$VALLE_REPO_ROOT:/workspace/icefall:$PYTHONPATH"
 # Run training script within Singularity container
-singularity run --nv --bind $valle_root:$valle_root $singularity_image \
+singularity run --nv --bind $VALLE_REPO_ROOT:$VALLE_REPO_ROOT $singularity_image \
     python3 bin/trainer.py \
       --max-duration $max_duration \
       --filter-min-duration $filter_min_duration \
@@ -44,7 +66,7 @@ singularity run --nv --bind $valle_root:$valle_root $singularity_image \
       --warmup-steps $warmup_steps \
       --average-period $average_period \
       --num-epochs $num_epochs \
-      --start-epoch $start_epoch \
-      --start-batch $start_batch \
+      --start-epoch 1 \
+      --start-batch 0 \
       --accumulate-grad-steps $accumulate_grad_steps \
       --exp-dir $checkpoint_dir
